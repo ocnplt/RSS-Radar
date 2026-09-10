@@ -1,3 +1,4 @@
+```yaml
 name: Daily RSS-Radar
 
 on:
@@ -13,10 +14,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
           cache: "pip"
@@ -25,11 +28,10 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Scan for leaked secrets (gitleaks)
-        uses: gitleaks/gitleaks-action@v2
+        uses: gitleaks/gitleaks-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          config: .gitleaks.toml
+          GITLEAKS_CONFIG: .gitleaks.toml
         continue-on-error: false
 
       - name: Run RSS-Radar
@@ -51,3 +53,4 @@ jobs:
           else
             echo "No changes."
           fi
+```
